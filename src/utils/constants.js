@@ -1,7 +1,6 @@
 export const SIGN_KEY = "sign_key_novel_reader_xhykjyxgs";
 
 export const CUSTOM_TAGS = [
-  // Genshin Role Names
   "绫华",
   "凯亚",
   "琴",
@@ -37,7 +36,6 @@ export const CUSTOM_TAGS = [
   "娜维娅",
   "卡萨帕",
   "阿蕾奇诺",
-  // StarRail Role Names
   "三月七",
   "克拉拉",
 ];

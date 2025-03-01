@@ -7,9 +7,8 @@ class ApiNovel {
 
   static addNovel(req, res) {
     let { name, cover_photo, author, detail, price, brief, size, tag } = req.body;
-    // TODO optimize codes
     if (!cover_photo) {
-      cover_photo = "https://www.baidu.com/img/flexible/logo/pc/result@2.png"; // use default book image
+      cover_photo = "https://www.baidu.com/img/flexible/logo/pc/result@2.png";
     }
     if (!author) {
       author = "佚名";
@@ -24,7 +23,6 @@ class ApiNovel {
       size = 1;
     }
     if (!tag) {
-      // TODO，getTags 比较耗时，最好不要在插入时计算，可以改成定期计算，减少插入数据库的等待时间
       tag = getTags(detail);
     }
     const sql = `insert into book (name, cover_photo, author, detail, price, brief, size, tag) values(?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -53,7 +51,6 @@ class ApiNovel {
         if (file.encoding === 'utf-8') {
           return file.originalname;
         }
-        // 格式 7bit 编码格式是 ASCII 编码格式的一个子集，用于表示 ASCII 字符集中的字符，需要 'latin1'转换
         else if (file.encoding === '7bit') {
           return Buffer.from(file.originalname, 'latin1').toString('utf8');
         }
@@ -77,7 +74,6 @@ class ApiNovel {
         } else {
           sql += `(?, ?, ?, ?, ?, ?, ?, ?),`;
         }
-        // TODO，getTags 比较耗时，最好不要在插入时计算，可以改成定期计算，减少插入数据库的等待时间
         const tag = getTags(fileContents[i]);
         const size = fileContents[i].length;
         const brief = fileContents[i].slice(0, 300);

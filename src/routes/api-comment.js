@@ -28,10 +28,7 @@ class ApiComment {
     if (!book_id) {
       res.status(400).send({ error_massage: "book_id is required" });
     }
-    // TODO 检查书籍是否存在
-    // select * from book 先查询一下 book 是否存在
     const sql = `insert into comment (book_id, detail, author, created_at) values(?, ?, ?, ?)`;
-    // 注：mysql 使用 NOW() 生成的时间是数据库的时间，nodejs 使用 new Date() 生成的是当前服务器的时间，可能不一样。所以这里用 nodejs 服务器时间
     const t = new Date();
     DBHelper(
       sql,
@@ -54,7 +51,6 @@ class ApiComment {
         .status(400)
         .send({ error_massage: "comment_id and detail are required" });
     }
-    // TODO add column last updated times
     const sql = `update comment set detail = ? where id = ?`;
     DBHelper(
       sql,

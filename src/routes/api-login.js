@@ -33,13 +33,6 @@ class ApiLogin {
       [email, password]
     );
   }
-
-  // TODO logout
-  // 删除本地 token，服务器怎么设置某个 token 失效？
-  // 代码案例中，用户退出登录的实现都是清除了浏览器端保存的token信息，本质上并不是让token失效
-  // Token强制失效的方案
-  // 1、在服务器端建立黑名单，保存强制失效的token，这样服务器就可以通过查询黑名单来禁止强制失效token正常工作了。
-  // 该方案违背了token的初衷，token初衷是实现服务器端无状态保存，现在虽然不保存登录状态，但是却要保存黑名单token，依旧会给集群服务器带来管理压力。
 }
 
 module.exports = ApiLogin;

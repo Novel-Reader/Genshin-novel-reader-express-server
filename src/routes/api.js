@@ -12,9 +12,7 @@ const router = express.Router();
 // 获取 POST 请求中的 formData 数据，可以使用 multer 中间件
 const upload = multer();
 
-// 127.0.0.1:8081/api/login/
 router.post("/login", ApiLogin.login);
-// router.post('/logout', ApiLogin.logout);
 
 router.get("/user", ApiUser.getUserInfo);
 router.post("/user", ApiUser.addUser);

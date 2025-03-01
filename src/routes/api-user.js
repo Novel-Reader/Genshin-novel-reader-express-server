@@ -4,7 +4,6 @@ const logger = require("../utils/logger");
 class ApiUser {
 
   static getUserInfo(req, res) {
-    // TODO should not return password
     const email = req.query.email;
     const sql = `SELECT * FROM user WHERE email=?`;
     DBHelper(
