@@ -5,12 +5,11 @@ const { getTags } = require("./utils/get-tags.js");
 
 function startSchedule() {
   // eslint-disable-next-line no-new
-  const updateTagsJob = schedule.scheduleJob('0 * * * * *', () => {
+  schedule.scheduleJob('0 * * * * *', () => {
     const sql = `SELECT id, name, detail FROM book WHERE tag = '' OR tag IS NULL`;
     DBHelper(sql, (err, results) => {
       if (err) {
         logger.error(err);
-        res.status(400).send({ error_massage: err });
         return;
       }
       if (results.length > 0) {
@@ -22,7 +21,6 @@ function startSchedule() {
           DBHelper(sql, (err, results) => {
             if (err) {
               logger.error(err);
-              res.status(400).send({ error_massage: err });
               return;
             }
           }, [tags, id]);
