@@ -1,0 +1,1 @@
+import{R as e,a as t}from"../assets/bootstrap.min-C1oV_tGa.js";const n=()=>React.createElement("div",null,"Page1Component"),a=e.createRoot(document.getElementById("react-app"));a.render(t.createElement(n,null));

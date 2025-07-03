@@ -7,3 +7,4 @@
 .DS_Store
 *.log
 src/config/config-local.json
+/react/node_modules
