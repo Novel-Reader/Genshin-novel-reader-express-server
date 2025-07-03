@@ -6,11 +6,14 @@ const ApiNovel = require('./api-novel');
 const ApiUser = require('./api-user');
 const ApiLogin = require('./api-login');
 const ApiUserBook = require('./api-user-book');
+const crossOriginMiddleWare = require("../middlewares/cross-origin");
 
 const router = express.Router();
 
 // 获取 POST 请求中的 formData 数据，可以使用 multer 中间件
 const upload = multer();
+
+router.use(crossOriginMiddleWare);
 
 router.post("/login", ApiLogin.login);
 

@@ -3,10 +3,8 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("./utils/logger");
-const pingRouter = require("./routes/ping");
 const indexRouter = require("./routes/index");
 const apiRouter = require("./routes/api");
-const crossOriginMiddleWare = require("./middlewares/cross-origin");
 const errorHandlerMiddleWare = require("./middlewares/error-handler");
 const verifyTokenMiddleWare = require("./middlewares/verify-token");
 const verifyTokenExpiresMiddleWare = require("./middlewares/verify-token-expires");
@@ -26,11 +24,9 @@ app.use(cookieParser());
 // handle static public import path
 app.use(express.static(path.join(__dirname, "public")));
 
-app.all("*", crossOriginMiddleWare);
 app.use(monitorMiddleWare);
 
 app.use("/", indexRouter);
-app.use("/ping", pingRouter);
 app.use("/api", apiRouter);
 
 // catch 404 and forward to error handler
