@@ -15,15 +15,17 @@ function startSchedule() {
       if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
           const { id, name, detail } = results[i];
-          const tags = getTags(detail);
-          logger.info('Update tags for book ' + name + ' to ' + tags);
-          const sql = `UPDATE book SET tag = ? WHERE id = ?`;
-          DBHelper(sql, (err, results) => {
-            if (err) {
-              logger.error(err);
-              return;
-            }
-          }, [tags, id]);
+          const callback = (tags) => {
+            logger.info('schedule update tags for book ' + name + ' to ' + tags);
+            const sql = `UPDATE book SET tag = ? WHERE id = ?`;
+            DBHelper(sql, (err, results) => {
+              if (err) {
+                logger.error(err);
+                return;
+              }
+            }, [tags, id]);
+          };
+          getTags(detail, callback);
         }
       }
     });

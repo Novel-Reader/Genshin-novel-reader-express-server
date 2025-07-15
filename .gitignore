@@ -8,3 +8,4 @@
 *.log
 src/config/config-local.json
 /react/node_modules
+/src/utils/python/myenv
