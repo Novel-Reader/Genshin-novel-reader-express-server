@@ -1,7 +1,6 @@
 const DBHelper = require("../utils/db-helper");
 const logger = require("../utils/logger");
 const { getValueFromRedis, setValueFromRedis } = require("../utils/redis-helper");
-const { getTags } = require("../utils/get-tags");
 
 class ApiNovel {
 
@@ -23,7 +22,7 @@ class ApiNovel {
       size = 1;
     }
     if (!tag) {
-      tag = getTags(detail);
+      tag = '';
     }
     const sql = `insert into book (name, cover_photo, author, detail, price, brief, size, tag) values(?, ?, ?, ?, ?, ?, ?, ?)`;
     DBHelper(sql, (err, results) => {
@@ -65,19 +64,17 @@ class ApiNovel {
       const author = "佚名";
       const price = 0;
       // 在 MariaDB 中，你可以使用以下方法来插入多条数据：使用单个 INSERT INTO 语句，多个 VALUES 子句：
-      // INSERT INTO book (name, cover_photo, author, detail, price, brief, size, tag) VALUES (), ()
-      let sql = 'INSERT INTO book (name, cover_photo, author, detail, price, brief, size, tag) VALUES';
+      let sql = 'INSERT INTO book (name, cover_photo, author, detail, price, brief, size) VALUES';
       let data = [];
       for (let i = 0; i < fileNames.length; i++) {
         if (i === fileNames.length - 1) {
-          sql += `(?, ?, ?, ?, ?, ?, ?, ?);`;
+          sql += `(?, ?, ?, ?, ?, ?, ?);`;
         } else {
-          sql += `(?, ?, ?, ?, ?, ?, ?, ?),`;
+          sql += `(?, ?, ?, ?, ?, ?, ?),`;
         }
-        const tag = getTags(fileContents[i]);
         const size = fileContents[i].length;
         const brief = fileContents[i].slice(0, 300);
-        data.push(fileNames[i], cover_photo, author, fileContents[i], price, brief, size, tag);
+        data.push(fileNames[i], cover_photo, author, fileContents[i], price, brief, size);
       }
       DBHelper(sql, (err, results) => {
         if (err) {
