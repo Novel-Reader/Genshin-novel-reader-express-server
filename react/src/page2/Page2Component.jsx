@@ -1,5 +1,7 @@
+import App from 'genshin-novel-reader';
+
 const Page2Component = () => {
-  return <div>Page2Component</div>;
+  return (<App/>);
 };
 
 export default Page2Component;
