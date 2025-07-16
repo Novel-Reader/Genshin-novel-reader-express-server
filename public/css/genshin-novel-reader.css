@@ -1,0 +1,546 @@
+.scroll-top-icon {
+  transition: bottom .2s ease;
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  right: 20px;
+  background-image: url(https://michael18811380328.github.io/demo/novel-demo/media/images/paimeng.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer
+}
+
+#main {
+  height: 100%;
+  width: 100%;
+  background-color: #fafaf9;
+  font-size: 16px;
+  position: relative;
+  overflow: hidden
+}
+
+#main .folder-icon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background-color: #fff;
+  border-radius: 50% 0 0 50%;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  line-height: 30px;
+  padding-left: 7px;
+  color: #666;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+#main .long-page {
+  overflow: auto;
+  height: 100%;
+  padding: 80px 60px;
+  background-size: cover
+}
+
+#main .long-page .long-page-container {
+  line-height: 1.5;
+  font-size: 16px;
+  border: 1px solid #e6e6dd;
+  padding: 50px;
+  background-color: #fff;
+  word-break: break-word
+}
+
+.toast-manager {
+  position: fixed;
+  margin: 0 auto;
+  max-width: 400px;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999999
+}
+
+.toast-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 0;
+  transition: all .24s cubic-bezier(0, 0, .2, 1)
+}
+
+@keyframes openAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(-120%)
+  }
+
+  to {
+    transform: translateY(0)
+  }
+}
+
+@keyframes closeAnimation {
+  0% {
+    transform: scale(1);
+    opacity: 1
+  }
+
+  to {
+    transform: scale(.9);
+    opacity: 0
+  }
+}
+
+.toast-container.entering,
+.toast-container.entered {
+  animation: openAnimation .24s cubic-bezier(.175, .885, .32, 1.175) both
+}
+
+.toast-container.exiting {
+  animation: closeAnimation .12s cubic-bezier(.4, 0, 1, 1) both
+}
+
+.toast-alert-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border-radius: 3px;
+  box-shadow: #435a6f4d 0 0 1px, #435a6f78 0 8px 10px -4px;
+  padding: 10px 16px;
+  background-color: #fff
+}
+
+.toast-alert-container.success {
+  border-left: 3px solid rgb(71, 184, 129);
+  color: #47b881
+}
+
+.toast-alert-container.warning {
+  border-left: 3px solid rgb(217, 130, 43);
+  color: #d9822b
+}
+
+.toast-alert-container.none {
+  border-left: 3px solid rgb(16, 112, 202);
+  color: #1070ca
+}
+
+.toast-alert-container.danger {
+  border-left: 3px solid rgb(236, 76, 71);
+  color: #ec4c47
+}
+
+.toast-alert-container .toast-alert-icon {
+  margin-right: 10px;
+  width: 14px;
+  height: 20px;
+  line-height: 20px
+}
+
+.toast-alert-container .toast-text-title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #435a6f
+}
+
+.toast-alert-container .toast-text-child {
+  font-size: 14px;
+  color: #999;
+  margin: 0
+}
+
+.toast-alert-container .toast-close {
+  text-align: center;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  margin-left: 15px;
+  line-height: 22px;
+  font-weight: 700;
+  font-size: 20px;
+  color: #000;
+  opacity: .5
+}
+
+.toast-alert-container .toast-close:hover {
+  opacity: 1
+}
+
+.vip-dialog .vip-dialog-upgrade-btn {
+  width: 100%;
+  margin: 10px 0
+}
+
+.vip-dialog .form-check-label {
+  margin-left: 4px
+}
+
+.vip-button {
+  background: linear-gradient(95.99deg, #0058db 16.4%, #9e00ff 100.83%);
+  border: none;
+  padding: 5px 10px;
+  width: fit-content;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px
+}
+
+.vip-button .icon-star-full {
+  color: gold
+}
+
+.vip-button .vip-button-text {
+  margin-left: 4px
+}
+
+.book-detail-dialog .modal-body {
+  overflow-y: auto;
+  max-height: 300px;
+  padding: 10px 30px
+}
+
+.book-detail-dialog .modal-body .comment-list .comment-item {
+  border-bottom: 1px dashed #ccc;
+  margin-top: 10px
+}
+
+.book-detail-dialog .modal-body .comment-list .comment-item textarea {
+  width: 100%;
+  min-height: 80px
+}
+
+.book-detail-dialog .modal-body .comment-list .comment-item .comment-btns {
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 13px
+}
+
+.book-detail-dialog .modal-body .comment-list .comment-item .comment-btns span {
+  padding: 0 10px;
+  border-right: 1px dashed #ccc;
+  cursor: pointer
+}
+
+.book-detail-dialog .modal-body .comment-list .comment-item .comment-btns span:last-child {
+  border-right: none
+}
+
+.book-detail-dialog .modal-body .comment-list .comment-item .comment-btns .comment-btns-time {
+  cursor: default
+}
+
+.add-comment {
+  height: 100px
+}
+
+.add-comment button {
+  float: right
+}
+
+.add-comment textarea {
+  resize: none
+}
+
+.book-list {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 500px;
+  overflow-y: auto
+}
+
+.book-list .book {
+  width: 29%;
+  display: flex;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc
+}
+
+.book-list .book .book-left {
+  width: 40%;
+  padding-right: 10px
+}
+
+.book-list .book .book-left img {
+  max-width: 100%;
+  width: 120px;
+  margin: 50% 0
+}
+
+.book-list .book .book-right {
+  width: 60%;
+  overflow: hidden
+}
+
+.book-list .book .book-right .book-right-name {
+  font-size: 14px;
+  text-align: center;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap
+}
+
+.book-list .book .book-right .book-right-author {
+  margin: 4px;
+  font-size: 14px;
+  text-align: center
+}
+
+.book-list .book .book-right .book-right-detail {
+  height: 70px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden
+}
+
+.book-list .book .book-right .book-right-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px
+}
+
+.add-novel-dialog {
+  width: calc(100% - 200px) !important;
+  max-width: calc(100% - 200px) !important
+}
+
+.add-novel-dialog .modal-content {
+  min-height: 500px;
+  max-height: 100%
+}
+
+.add-novel-dialog .modal-body {
+  display: flex;
+  padding: 0
+}
+
+.add-novel-dialog .modal-body .add-novel-dialog-side {
+  width: 180px;
+  padding: 10px;
+  border-right: 1px solid #e6e6dd
+}
+
+.add-novel-dialog .modal-body .add-novel-dialog-side .nav-item {
+  cursor: pointer
+}
+
+.add-novel-dialog .modal-body .add-novel-dialog-main {
+  width: calc(100% - 180px);
+  padding: 10px
+}
+
+.add-novel-dialog .modal-body .add-novel-dialog-main .local-file-input {
+  height: 0px;
+  width: 0px;
+  opacity: 0
+}
+
+.add-novel-dialog .modal-body .add-novel-dialog-main .local-file-info .load-from-local-brief {
+  min-height: 120px
+}
+
+.add-novel-dialog .modal-body .add-novel-dialog-main .local-file-info .modal-footer {
+  border-top: none
+}
+
+.outline {
+  padding: 10px;
+  border-top: 1px solid #e2e2e2
+}
+
+.outline .outline-novel-index {
+  cursor: pointer;
+  margin: 4px
+}
+
+.navs {
+  background-color: #fafafa;
+  flex-shrink: 0;
+  border-right: 1px solid #cccccc
+}
+
+.navs .navs-header {
+  height: 40px;
+  padding: 5px 10px 0;
+  display: flex;
+  justify-content: space-between
+}
+
+.navs .navs-header .navs-header-search {
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.navs .navs-header .navs-header-search .navs-header-search-input {
+  margin: 0 5px;
+  border: 0;
+  border-bottom: 1px solid #cccccc;
+  border-radius: 0;
+  background-color: #fafafa
+}
+
+.navs .navs-header .navs-header-search .navs-header-search-input:focus {
+  box-shadow: none
+}
+
+.navs .navs-header .navs-header-icon {
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  cursor: pointer
+}
+
+.navs .navs-body {
+  height: calc(100% - 80px);
+  overflow-y: auto
+}
+
+.navs .navs-body .navs-body-item {
+  padding: 4px 10px;
+  justify-content: center;
+  align-items: center
+}
+
+.navs .navs-body .navs-body-item:hover {
+  cursor: pointer
+}
+
+.navs .navs-body .navs-body-item.active {
+  background-color: #eee
+}
+
+.navs .navs-body .navs-body-item .navs-body-item-name {
+  width: calc(100% - 20px)
+}
+
+.navs .navs-body .navs-body-item .navs-body-item-delete {
+  width: 20px
+}
+
+.navs .navs-footer .novel-reader-ant-btn {
+  width: 100%
+}
+
+.admin-statistics .admin-comments,
+.admin-statistics .admin-books,
+.admin-statistics .admin-users,
+.admin-statistics .admin-comments-chart {
+  margin-bottom: 50px
+}
+
+.admin-statistics .admin-comments-chart {
+  display: flex
+}
+
+.admin-statistics .admin-comments-chart .admin-comments-chart-type {
+  flex: 3
+}
+
+.admin-statistics .admin-comments-chart .admin-comments-chart-setting {
+  flex: 1
+}
+
+.basic-settings .basic-settings-item {
+  margin-bottom: .5rem
+}
+
+.basic-settings .basic-settings-item>button {
+  margin: 4px 0
+}
+
+.basic-settings .basic-settings-item .btn-group .btn {
+  padding: 6px 10px
+}
+
+.advance-settings {
+  padding: 0
+}
+
+.advance-settings .advance-theme-settings-select,
+.advance-settings .advance-font-settings {
+  cursor: pointer;
+  margin-bottom: .5rem
+}
+
+.advance-settings .font-color-settings-current {
+  width: 20px;
+  height: 20px;
+  margin: 10px;
+  border: 1px solid #ccc
+}
+
+.settings {
+  padding: 0 10px;
+  overflow-y: auto;
+  background-color: #fafafa;
+  height: 100%;
+  width: 200px;
+  transition: width .5s ease-in-out 0s;
+  flex-shrink: 0;
+  border-left: 1px solid #cccccc
+}
+
+.settings .settings-header,
+.settings .settings-body {
+  width: 250px
+}
+
+.settings .settings-header .nav-tabs .nav-item {
+  cursor: pointer
+}
+
+.settings .settings-body {
+  padding: 16px;
+  height: calc(100% - 40px);
+  overflow-y: auto
+}
+
+.settings .novel-reader-ant-typography {
+  margin: 8px 0
+}
+
+.settings .novel-reader-ant-tabs-nav-list {
+  width: 100%
+}
+
+.settings .novel-reader-ant-tabs-tab {
+  margin: 0 !important;
+  width: 50%;
+  display: flex;
+  justify-content: center
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace
+}
+
+body,
+html,
+#root,
+#app {
+  width: 100%;
+  height: 100%
+}
+
+#app {
+  display: flex;
+  overflow-x: hidden
+}
