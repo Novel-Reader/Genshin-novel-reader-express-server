@@ -21,8 +21,8 @@ router.get("/logout", function (req, res, next) {
   res.render("logout");
 });
 
-router.get("/static-novel", function (req, res, next) {
-  res.render("static-novel");
+router.get("/novel", function (req, res, next) {
+  res.render("novel");
 });
 
 module.exports = router;
