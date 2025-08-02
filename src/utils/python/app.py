@@ -28,7 +28,6 @@ def analyze_word_frequency(text, top_n=10):
     return ','.join([word for word, count in top_words])
     
 if __name__ == "__main__":
-    # 从 Node.js 获取2个参数
     result = analyze_word_frequency(sys.argv[1], int(sys.argv[2]))
     # 这里先把结果打印出来，然后 python.stdout.on 获取数据，这个不是函数，所以不能直接 return data
     print(result)
