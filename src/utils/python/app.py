@@ -6,7 +6,7 @@ from io import StringIO
 import gzip
 import sys
 
-def analyze_word_frequency(text, top_n=10):
+def analyze_word_frequency(text, top_n=20):
     """
     分析文本的词频并返回 Top N关键词
     :param text: 待分析的文本内容

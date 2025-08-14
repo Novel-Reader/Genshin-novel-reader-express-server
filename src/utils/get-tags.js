@@ -25,7 +25,7 @@ function getTags(text, callback) {
   let result = '';
   try {
     // 先开启虚拟环境, 安装 python 依赖，然后在根目录下运行 npm start,所以这里路径应该是
-    python = spawn('python3', ['src/utils/python/app.py', text, '10']);
+    python = spawn('python3', ['src/utils/python/app.py', text, '20']);
   } catch (error) {
     logger.error('spawn python process error', error);
   }
