@@ -8,7 +8,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         page1: path.resolve(__dirname, 'src/page1/index.jsx'),
-        page2: path.resolve(__dirname, 'src/page2/index.jsx'),
+        reader: path.resolve(__dirname, 'src/reader/index.jsx'),
+        register: path.resolve(__dirname, 'src/register/index.jsx'),
       },
       output: {
         format: 'es',

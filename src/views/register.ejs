@@ -2,29 +2,19 @@
 <html lang="en">
   <head>
     <%- include('common') %>
-    <%- include('style') %>
-    <title>注册</title>
+    <link rel="stylesheet" href="css/genshin-novel-reader.css">
+    <title>Genshin novel reader</title>
+    <style>
+      #react-app {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
   </head>
     <body>
-      <div class="page-container">
-        注册功能暂不支持
-        <form action="/admin/register" method="post" class="form-example">
-          <div class="form-example">
-            <label for="name">用户名</label>
-            <input type="text" name="name" id="name" required>
-          </div>
-          <div class="form-example">
-            <label for="password">密码</label>
-            <input type="password" name="password" id="password" required>
-          </div>
-          <div class="form-example">
-            <label for="password1">再次输入密码</label>
-            <input type="password1" name="password1" id="password1" required>
-          </div>
-          <div class="form-example">
-            <input type="submit" value="注册">
-          </div>
-        </form>
-      </div>
+      <div id="react-app"></div>
+      <script src="/react.production.min.js"></script>
+      <script src="/react-dom.production.min.js"></script>
+      <script type="module" src="/js/register/index.es.js"></script>
     </body>
 </html>

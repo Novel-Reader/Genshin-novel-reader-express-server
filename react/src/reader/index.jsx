@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Page2Component from './Page2Component';
+import App from 'genshin-novel-reader';
 
 const root = ReactDOM.createRoot(document.getElementById('react-app'));
 
-root.render(<Page2Component />);
+root.render(
+  <App
+    mode={'online'}
+    server={'http://127.0.0.1:8081'}
+  />
+);
