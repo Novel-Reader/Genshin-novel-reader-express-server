@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "axios": "^1.11.0",
+    "axios": "^1.12.1",
     "bootstrap": "^5.3.7",
     "genshin-novel-reader": "^2.2.0",
     "prop-types": "^15.8.1",
