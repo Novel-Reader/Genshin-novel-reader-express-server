@@ -25,7 +25,8 @@ function getTags(text, callback) {
   let result = '';
   try {
     // 先开启虚拟环境, 安装 python 依赖，然后在根目录下运行 npm start,所以这里路径应该是
-    python = spawn('python3', ['src/utils/python/app.py', text, '20']);
+    // 使用 nice 命令降低 CPU 优先级，数值越大优先级越低（0-19），避免占用过多CPU资源造成服务卡顿
+    python = spawn('nice', ['-n', '10', 'python3', 'src/utils/python/app.py', text, '20']);
   } catch (error) {
     logger.error('spawn python process error', error);
   }
@@ -34,7 +35,7 @@ function getTags(text, callback) {
       result += data.toString();
     });
     python.stderr.on('data', (data) => {
-      console.error(`error: ${data}`);
+      logger.error(`error: ${data}`);
     });
     python.on('close', (code) => {
       if (code === 0) {
@@ -45,7 +46,7 @@ function getTags(text, callback) {
         }
         callback(allTags);
       } else {
-        console.log(`进程以 ${code} 代码退出`);
+        logger.error(`进程以 ${code} 代码退出`);
       }
     });
   } else {
