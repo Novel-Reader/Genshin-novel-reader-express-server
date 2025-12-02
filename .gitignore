@@ -10,3 +10,4 @@ src/config/config-local.json
 /react/node_modules
 /src/utils/python/myenv
 /public/js/**
+react/config/config-local.json
