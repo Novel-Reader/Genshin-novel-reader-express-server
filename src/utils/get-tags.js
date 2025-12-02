@@ -35,7 +35,7 @@ function getTags(text, callback) {
       result += data.toString();
     });
     python.stderr.on('data', (data) => {
-      logger.error(`error: ${data}`);
+      logger.info(`data: ${data}`);
     });
     python.on('close', (code) => {
       if (code === 0) {
