@@ -24,12 +24,10 @@ class ApiUser {
     const { email, name, password } = req.body;
     // verify user info must contain email, name and password
     if (!email || !name || !password) {
-      res
-        .status(400)
-        .send({ error_massage: "Email, username or password is not correct" });
+      res.status(400).send({ error_massage: "Email, username or password is not correct" });
       return;
     }
-    if (password.length < 6) {
+    if (password.length < 2) {
       res.status(400).send({ error_massage: "Password is too short" });
       return;
     }

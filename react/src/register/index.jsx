@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
+import CONFIG from '../../config/config.json';
+import LOCAL_CONFIG from '../../config/config-local.json';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const server = 'http://127.0.0.1:8081';
+const config = LOCAL_CONFIG || CONFIG;
+const server = `http://${config.expressHost}:${config.expressPort}`;
 
 class Register extends React.Component {
   
@@ -35,7 +38,7 @@ class Register extends React.Component {
     axios
       .post(`${server}/api/user`, options)
       .then((res) => {
-        if (res === 'success') {
+        if (res.data === 'success') {
           alert("注册成功");
         } else {
           alert("注册失败")
