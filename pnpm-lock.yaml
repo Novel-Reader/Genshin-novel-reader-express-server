@@ -48,7 +48,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.3
       log4js:
-        specifier: ^6.7.1
+        specifier: ^6.9.1
         version: 6.9.1
       multer:
         specifier: ^2.1.1
