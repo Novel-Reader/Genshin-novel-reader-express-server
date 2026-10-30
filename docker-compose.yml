@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   db:
     image: mariadb:10.5
@@ -14,7 +12,7 @@ services:
       - lower_case_table_names=1
 
   redis:
-    image: "redis:alpine"
+    image: "redis:5.0.7"
     container_name: novel-redis
     ports:
       - 6379:6379
