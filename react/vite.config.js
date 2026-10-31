@@ -7,7 +7,6 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        page1: path.resolve(__dirname, 'src/page1/index.jsx'),
         reader: path.resolve(__dirname, 'src/reader/index.jsx'),
         register: path.resolve(__dirname, 'src/register/index.jsx'),
       },
