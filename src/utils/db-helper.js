@@ -27,6 +27,7 @@ function DBHelper(sql, callback, add = null) {
     }
   } catch (error) {
     logger.error(error);
+    callback(error);
   }
 }
 
