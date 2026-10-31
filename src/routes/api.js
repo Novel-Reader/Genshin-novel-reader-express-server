@@ -7,6 +7,7 @@ const ApiUser = require('./api-user');
 const ApiLogin = require('./api-login');
 const ApiUserBook = require('./api-user-book');
 const crossOriginMiddleWare = require("../middlewares/cross-origin");
+const verifyTokenExpiresMiddleWare = require("../middlewares/verify-token-expires");
 
 const router = express.Router();
 
@@ -15,10 +16,13 @@ const upload = multer();
 
 router.use(crossOriginMiddleWare);
 
+// Login and registration are public. All following API routes require a JWT.
 router.post("/login", ApiLogin.login);
+router.post("/user", ApiUser.addUser);
+
+router.use(verifyTokenExpiresMiddleWare);
 
 router.get("/user", ApiUser.getUserInfo);
-router.post("/user", ApiUser.addUser);
 router.delete("/user", ApiUser.deleteUser);
 router.post("/user-password", ApiUser.changeUserPassword);
 router.post("/user-avatar", ApiUser.changeUserAvatar);

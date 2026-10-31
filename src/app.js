@@ -6,8 +6,6 @@ const logger = require("./utils/logger");
 const indexRouter = require("./routes/index");
 const apiRouter = require("./routes/api");
 const errorHandlerMiddleWare = require("./middlewares/error-handler");
-const verifyTokenMiddleWare = require("./middlewares/verify-token");
-const verifyTokenExpiresMiddleWare = require("./middlewares/verify-token-expires");
 const monitorMiddleWare = require("./middlewares/monitor");
 
 const app = express();
@@ -34,18 +32,15 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-app.use(errorHandlerMiddleWare);
-app.use(verifyTokenMiddleWare);
-app.use(verifyTokenExpiresMiddleWare);
-
 // When token fails, return 401 error
 app.use(function (err, req, res, next) {
-  if (err) {
+  if (err.status === 401) {
     logger.info(err);
-    if (err.status === 401) {
-      return res.status(401).send("Token is invalid");
-    }
+    return res.status(401).send("Token is invalid");
   }
+  return next(err);
 });
+
+app.use(errorHandlerMiddleWare);
 
 module.exports = app;
