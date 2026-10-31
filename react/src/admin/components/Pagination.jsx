@@ -9,7 +9,9 @@ export default function Pagination({ page, total, pageSize, loading, onPageChang
       <span className="pagination-count">{range}</span>
       <div className="pagination-controls">
         <button type="button" disabled={page <= 1 || loading} onClick={() => onPageChange(page - 1)}>上一页</button>
-        <span className="page-indicator"><strong>{page}</strong><span>/</span>{pageCount}</span>
+        <span className="page-indicator">
+          <strong>{page}</strong><span>/</span>{pageCount}
+        </span>
         <button type="button" disabled={page >= pageCount || loading} onClick={() => onPageChange(page + 1)}>下一页</button>
       </div>
     </footer>
