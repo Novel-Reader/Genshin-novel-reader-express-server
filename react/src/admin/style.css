@@ -370,6 +370,267 @@ tbody tr:hover {
   font-weight: 500;
 }
 
+.book-row {
+  cursor: pointer;
+}
+
+.book-title-button {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.book-title-button span {
+  color: #899889;
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.book-row:hover .book-title-button span,
+.book-title-button:focus-visible span {
+  opacity: 1;
+}
+
+.back-link {
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+  color: #6f8072;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  color: #2f4936;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  min-height: 145px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #e1e5de;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.stat-card > span {
+  color: #7f8b80;
+  font-size: 11px;
+}
+
+.stat-card strong {
+  margin: 13px 0 5px;
+  color: #304235;
+  font: 30px 'DM Mono', monospace;
+  font-weight: 400;
+  letter-spacing: -.06em;
+}
+
+.stat-card small {
+  color: #9aa39a;
+  font-size: 10px;
+}
+
+.detail-panel {
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid #e1e5de;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.panel-heading {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.panel-heading .eyebrow {
+  margin-bottom: 8px;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  color: #2f3d33;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.panel-heading > span {
+  color: #9aa29a;
+  font-size: 10px;
+}
+
+.chart-controls {
+  margin: -4px 0 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.chart-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8c968c;
+  font-size: 10px;
+}
+
+.chart-controls select {
+  min-height: 30px;
+  padding: 0 25px 0 9px;
+  border: 1px solid #e1e6df;
+  border-radius: 3px;
+  color: #536055;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.chart-canvas {
+  width: 100%;
+  min-height: 290px;
+}
+
+.author-breakdown {
+  display: grid;
+  gap: 14px;
+}
+
+.author-row {
+  display: grid;
+  grid-template-columns: minmax(70px, 150px) minmax(50px, 1fr) 32px;
+  align-items: center;
+  gap: 12px;
+  color: #68746a;
+  font-size: 11px;
+}
+
+.author-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.author-row strong {
+  color: #637367;
+  font: 10px 'DM Mono', monospace;
+  font-weight: 400;
+  text-align: right;
+}
+
+.author-track {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #eef1eb;
+}
+
+.author-track i {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: #91a486;
+}
+
+.stats-empty {
+  margin: 0;
+  padding: 24px 0;
+  color: #929c92;
+  font-size: 12px;
+  text-align: center;
+}
+
+.detail-comments {
+  border-top: 1px solid #edf0eb;
+}
+
+.detail-comment {
+  padding: 16px 2px;
+  border-bottom: 1px solid #edf0eb;
+}
+
+.detail-comment > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-comment strong {
+  color: #46564a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.detail-comment time {
+  color: #a0a8a0;
+  font: 9px 'DM Mono', monospace;
+}
+
+.detail-comment p {
+  margin: 9px 0 0;
+  color: #6c766e;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.detail-error {
+  padding: 18px 20px;
+  border: 1px solid #eadbd6;
+  border-radius: 4px;
+  color: #a45442;
+  background: #fffaf8;
+  font-size: 12px;
+}
+
+.overview-books-link {
+  width: 100%;
+  min-height: 58px;
+  padding: 0 19px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #dfe5dc;
+  border-radius: 4px;
+  color: #46584a;
+  background: #f8faf6;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.overview-books-link:hover {
+  border-color: #bdcbb8;
+  background: #f2f6ef;
+}
+
+.overview-books-link span {
+  font-size: 17px;
+}
+
 @media (max-width: 760px) {
   .admin-sidebar {
     width: 70px;
@@ -383,6 +644,7 @@ tbody tr:hover {
   }
 
   .admin-brand>span:last-child,
+  .sidebar-heading,
   .nav-item>span:not(.nav-index, .nav-current),
   .nav-index,
   .nav-current,
@@ -405,20 +667,28 @@ tbody tr:hover {
     font-size: 0;
   }
 
+  .nav-item:nth-child(1)::after {
+    display: none;
+  }
+
   .nav-item::before {
     color: #bdc9bc;
     font-size: 15px;
   }
 
   .nav-item:nth-child(1)::before {
-    content: '书';
+    content: '概';
   }
 
   .nav-item:nth-child(2)::before {
-    content: '人';
+    content: '书';
   }
 
   .nav-item:nth-child(3)::before {
+    content: '人';
+  }
+
+  .nav-item:nth-child(4)::before {
     content: '评';
   }
 
@@ -452,6 +722,47 @@ tbody tr:hover {
 
   .page-heading p {
     font-size: 12px;
+  }
+
+  .stat-cards {
+    gap: 8px;
+  }
+
+  .stat-card {
+    min-height: 126px;
+    padding: 14px 12px;
+  }
+
+  .stat-card strong {
+    font-size: 23px;
+  }
+
+  .stat-card small {
+    font-size: 9px;
+  }
+
+  .detail-panel {
+    padding: 16px 13px;
+  }
+
+  .chart-controls {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .chart-controls label {
+    gap: 5px;
+  }
+
+  .chart-controls select {
+    padding-left: 6px;
+    padding-right: 18px;
+  }
+
+  .author-row {
+    grid-template-columns: minmax(58px, 90px) minmax(40px, 1fr) 24px;
+    gap: 8px;
   }
 
   .pagination-bar {

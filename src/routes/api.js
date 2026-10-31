@@ -42,6 +42,8 @@ router.delete("/comment", ApiComment.deleteComment);
 router.get("/admin/users", ApiAdmin.getUsers);
 router.get("/admin/books", ApiAdmin.getBooks);
 router.get("/admin/comments", ApiAdmin.getComments);
+router.get("/admin/statistics", ApiAdmin.getStatistics);
+router.get("/admin/book-statistics", ApiAdmin.getBookStatistics);
 
 router.get("/user-book", ApiUserBook.getUserBookList);
 router.post("/user-book", ApiUserBook.updateUserBook);

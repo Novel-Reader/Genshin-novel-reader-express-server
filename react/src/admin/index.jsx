@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
+import AdminSidebar from './components/AdminSidebar';
+import BookStatistics from './components/BookStatistics';
+import RecordsTable from './components/RecordsTable';
+import StatisticsOverview from './components/StatisticsOverview';
 import './style.css';
 
 const PAGE_SIZE = 20;
-
 const sections = {
   books: {
     label: '书籍管理',
@@ -15,6 +18,7 @@ const sections = {
       { key: 'author', label: '作者' },
       { key: 'tag', label: '标签' },
       { key: 'size', label: '字数', format: (value) => value ? Number(value).toLocaleString('zh-CN') : '—' },
+      { key: 'download_count', label: '阅读量', format: (value) => Number(value || 0).toLocaleString('zh-CN') },
       { key: 'price', label: '价格', format: (value) => value == null ? '—' : `¥${value}` },
     ],
   },
@@ -41,6 +45,11 @@ const sections = {
   },
 };
 
+const navigation = [
+  { key: 'overview', label: '统计概览' },
+  ...Object.entries(sections).map(([key, section]) => ({ key, label: section.label })),
+];
+
 function formatDate(value) {
   if (!value) return '—';
   const date = new Date(value);
@@ -48,134 +57,122 @@ function formatDate(value) {
 }
 
 function AdminApp() {
-  const [sectionKey, setSectionKey] = useState('books');
+  const [sectionKey, setSectionKey] = useState('overview');
   const [page, setPage] = useState(1);
   const [records, setRecords] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [statistics, setStatistics] = useState(null);
+  const [bookId, setBookId] = useState(null);
+  const [bookPage, setBookPage] = useState(1);
+  const [bookStatistics, setBookStatistics] = useState(null);
+  const [bookLoading, setBookLoading] = useState(false);
+  const [bookError, setBookError] = useState('');
   const section = sections[sectionKey];
-  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const activeNavigation = navigation.find((item) => item.key === sectionKey);
 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setError('');
+    const request = sectionKey === 'overview'
+      ? axios.get('/api/admin/statistics', { signal: controller.signal })
+      : axios.get(section.endpoint, { params: { page, pageSize: PAGE_SIZE }, signal: controller.signal });
 
-    axios.get(section.endpoint, {
-      params: { page, pageSize: PAGE_SIZE },
-      signal: controller.signal,
-    }).then(({ data }) => {
-      setRecords(data.data);
-      setTotal(data.total);
+    request.then(({ data }) => {
+      if (sectionKey === 'overview') setStatistics(data);
+      else {
+        setRecords(data.data);
+        setTotal(data.total);
+      }
     }).catch((requestError) => {
       if (!axios.isCancel(requestError)) {
         setError(requestError.response?.data?.error_message || '暂时无法加载数据，请稍后重试。');
-        setRecords([]);
-        setTotal(0);
+        if (sectionKey === 'overview') setStatistics(null);
+        else {
+          setRecords([]);
+          setTotal(0);
+        }
       }
     }).finally(() => {
       if (!controller.signal.aborted) setLoading(false);
     });
 
     return () => controller.abort();
-  }, [section.endpoint, page]);
+  }, [sectionKey, page]);
+
+  useEffect(() => {
+    if (bookId == null) return undefined;
+    const controller = new AbortController();
+    setBookLoading(true);
+    setBookError('');
+    axios.get('/api/admin/book-statistics', {
+      params: { book_id: bookId, page: bookPage, pageSize: PAGE_SIZE },
+      signal: controller.signal,
+    }).then(({ data }) => setBookStatistics(data)).catch((requestError) => {
+      if (!axios.isCancel(requestError)) {
+        setBookError(requestError.response?.data?.error_message || '暂时无法加载书籍统计。');
+      }
+    }).finally(() => {
+      if (!controller.signal.aborted) setBookLoading(false);
+    });
+    return () => controller.abort();
+  }, [bookId, bookPage]);
 
   function selectSection(key) {
     setSectionKey(key);
     setPage(1);
+    setBookId(null);
+    setBookStatistics(null);
   }
+
+  function openBookStatistics(book) {
+    setBookId(book.id);
+    setBookPage(1);
+    setBookStatistics(null);
+    setBookError('');
+  }
+
+  const detailBook = bookStatistics?.book || records.find((record) => record.id === bookId);
+  const title = bookId == null ? activeNavigation.label : '书籍统计';
 
   return (
     <main className="admin-shell">
-      <aside className="admin-sidebar">
-        <a className="admin-brand" href="/" aria-label="返回首页">
-          <span className="brand-mark">N</span>
-          <span>Novel<span className="brand-caption">STUDIO / ADMIN</span></span>
-        </a>
-        <nav className="admin-nav" aria-label="管理导航">
-          {Object.entries(sections).map(([key, item], index) => (
-            <button
-              className={`nav-item${sectionKey === key ? ' active' : ''}`}
-              key={key}
-              onClick={() => selectSection(key)}
-              type="button"
-            >
-              <span className="nav-index">0{index + 1}</span>
-              <span>{item.label}</span>
-              {sectionKey === key && <span className="nav-current" aria-hidden="true" />}
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <span className="status-dot" /> 内容管理系统
-          <span className="sidebar-version">ADMIN / 01</span>
-        </div>
-      </aside>
-
+      <AdminSidebar navigation={navigation} activeKey={sectionKey} detailOpen={bookId != null} onSelect={selectSection} />
       <section className="admin-content">
         <header className="content-topbar">
-          <div className="breadcrumb">工作台 <span>/</span> {section.label}</div>
+          <div className="breadcrumb">工作台 <span>/</span> {title}{detailBook && <> <span>/</span> {detailBook.name}</>}</div>
           <a className="site-link" href="/">返回阅读站 <span aria-hidden="true">↗</span></a>
         </header>
-
         <div className="content-inner">
-          <div className="page-heading">
-            <div>
-              <h1>{section.label}</h1>
-              <p>浏览与管理平台中的{section.label.slice(0, -2)}记录。</p>
-            </div>
-            <div className="record-summary">
-              <span className="summary-label">记录总数</span>
-              <strong>{total.toLocaleString('zh-CN')}</strong>
-              <span className="summary-unit">条</span>
-            </div>
-          </div>
-
-          <div className="table-frame">
-            <div className="table-toolbar">
-              <div><span className="live-indicator" /> 当前列表</div>
-              <span>每页 {PAGE_SIZE} 条</span>
-            </div>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>{section.columns.map((column) => <th key={column.key} style={{ width: column.width }}>{column.label}</th>)}</tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr><td className="table-message" colSpan={section.columns.length}>正在读取记录…</td></tr>
-                  ) : error ? (
-                    <tr><td className="table-message error-message" colSpan={section.columns.length}>{error}</td></tr>
-                  ) : records.length === 0 ? (
-                    <tr><td className="table-message" colSpan={section.columns.length}>这里还没有记录</td></tr>
-                  ) : records.map((record) => (
-                    <tr key={record.id}>
-                      {section.columns.map((column) => {
-                        const value = record[column.key];
-                        const displayValue = column.format ? column.format(value) : value ?? '—';
-                        return (
-                          <td className={column.primary ? 'primary-cell' : ''} key={column.key} title={String(displayValue)}>
-                            {displayValue}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <footer className="pagination-bar">
-              <span className="pagination-count">
-                {total === 0 ? '显示 0 条记录' : `显示 ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} 条，共 ${total} 条`}
-              </span>
-              <div className="pagination-controls">
-                <button type="button" disabled={page <= 1 || loading} onClick={() => setPage((current) => current - 1)}>上一页</button>
-                <span className="page-indicator"><strong>{page}</strong><span>/</span>{pageCount}</span>
-                <button type="button" disabled={page >= pageCount || loading} onClick={() => setPage((current) => current + 1)}>下一页</button>
-              </div>
-            </footer>
-          </div>
+          {bookId != null ? (
+            <BookStatistics
+              book={detailBook}
+              statistics={bookStatistics}
+              page={bookPage}
+              pageSize={PAGE_SIZE}
+              loading={bookLoading}
+              error={bookError}
+              onPageChange={setBookPage}
+              onBack={() => { setBookId(null); setBookStatistics(null); }}
+            />
+          ) : sectionKey === 'overview' ? (
+            <StatisticsOverview statistics={statistics} loading={loading} error={error} onBrowseBooks={() => selectSection('books')} />
+          ) : (
+            <RecordsTable
+              section={section}
+              sectionKey={sectionKey}
+              records={records}
+              total={total}
+              page={page}
+              pageSize={PAGE_SIZE}
+              loading={loading}
+              error={error}
+              onPageChange={setPage}
+              onBookSelect={openBookStatistics}
+            />
+          )}
         </div>
       </section>
     </main>
