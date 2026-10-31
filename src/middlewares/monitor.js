@@ -3,12 +3,7 @@ const logger = require("../utils/logger");
 const monitorMiddleware = (req, res, next) => {
   const { method, path: url } = req;
 
-  let body = [];
-  req.on("data", (chunk) => {
-    body.push(chunk);
-  });
   req.on("end", () => {
-    body = Buffer.concat(body).toString();
     logger.info(`REQUEST: [${method}] ${url}`);
   });
 
