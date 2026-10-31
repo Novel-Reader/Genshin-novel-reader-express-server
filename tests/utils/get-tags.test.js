@@ -1,20 +1,51 @@
-import { getTags } from "../../src/utils/get-tags";
+const http = require("http");
+const { getTags } = require("../../src/utils/get-tags");
 
 describe("getTags", () => {
-  it("should return tags with ,", () => {
-    let text = " ";
-    let tags = getTags(text);
-    expect(tags).toBe(",");
+  let server;
+  let tagResponse;
+  let originalPythonApiUrl;
+
+  beforeEach((done) => {
+    originalPythonApiUrl = process.env.PYTHON_API_URL;
+    tagResponse = { tags: "芭芭拉,小说" };
+    server = http.createServer((req, res) => {
+      let body = "";
+      req.setEncoding("utf8");
+      req.on("data", (chunk) => {
+        body += chunk;
+      });
+      req.on("end", () => {
+        expect(req.url).toBe("/api/tags");
+        expect(JSON.parse(body)).toEqual({ text: "novel text" });
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(tagResponse));
+      });
+    });
+    server.listen(0, "127.0.0.1", () => {
+      process.env.PYTHON_API_URL = `http://127.0.0.1:${server.address().port}`;
+      done();
+    });
   });
-  it("should return tags with", () => {
-    let text = `我俯身吻向了那娇艳动人的红唇。被吻住的时候，芭芭拉还是愣住了。等她反应过来，我才缓缓地离开了她的嘴唇。
-    “你、你…你这是……”芭芭拉感觉到自己的心跳不断加快，身体有一种酥酥麻麻的感觉，就好像全身被电了一样，有些使不上力气。
-    “你不是想要我的答复吗？”我温柔地抱住芭芭拉，在她的耳旁轻声说道，“这就是我的答复，我的态度。”
-    芭芭拉的内心一暖，听到我的话后，她的嘴角微微扬起一个弧度。
-    “时、时间也不早了，我该回去休息了。”芭芭拉不舍地离开了我的怀抱，她的脸上依旧挂着两道醉人的红晕。
-    `;
-    let tags = getTags(text);
-    expect(tags).toBe("芭芭拉,芭芭拉,离开,感觉,答复,俯身,娇艳动人,红唇,时候,还是,愣住");
+
+  afterEach((done) => {
+    if (originalPythonApiUrl === undefined) delete process.env.PYTHON_API_URL;
+    else process.env.PYTHON_API_URL = originalPythonApiUrl;
+    server.close(done);
+  });
+
+  it("sends novel text to the tag API and returns generated tags", async () => {
+    await expect(getTags("novel text")).resolves.toBe("芭芭拉,小说");
+  });
+
+  it("rejects non-success responses so the scheduler can retry", async () => {
+    tagResponse = { error: "invalid text" };
+    server.removeAllListeners("request");
+    server.on("request", (req, res) => {
+      res.statusCode = 400;
+      res.end(JSON.stringify(tagResponse));
+    });
+
+    await expect(getTags("novel text")).rejects.toThrow("HTTP 400");
   });
 });
-

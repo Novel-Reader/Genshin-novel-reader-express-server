@@ -41,21 +41,20 @@ function startSchedule() {
         logger.info(`Found ${results.length} books without tags, processing in queue...`);        
         results.forEach(({ id, name, detail }) => {
           queue.push(() => {
-            return new Promise((resolve, reject) => {
-              const callback = (tags) => {
-                logger.info('schedule update tags for book ' + name + ' to ' + tags);
-                const sql = `UPDATE book SET tag = ? WHERE id = ?`;
-                DBHelper(sql, (err, results) => {
-                  if (err) {
-                    logger.error('Database update error:', err);
-                    reject(err);
-                  } else {
-                    logger.info(`Successfully updated tags for book: ${name}`);
-                    resolve();
-                  }
-                }, [tags, id]);
-              };
-              getTags(detail, callback);
+            return getTags(detail).then((tags) => new Promise((resolve, reject) => {
+              logger.info('schedule update tags for book ' + name + ' to ' + tags);
+              const sql = `UPDATE book SET tag = ? WHERE id = ?`;
+              DBHelper(sql, (err) => {
+                if (err) {
+                  logger.error('Database update error:', err);
+                  reject(err);
+                } else {
+                  logger.info(`Successfully updated tags for book: ${name}`);
+                  resolve();
+                }
+              }, [tags, id]);
+            })).catch((error) => {
+              logger.error(`Failed to generate tags for book ${name}; it will be retried later:`, error);
             });
           });
         });
