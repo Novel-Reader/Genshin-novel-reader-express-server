@@ -32,15 +32,6 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// When token fails, return 401 error
-app.use(function (err, req, res, next) {
-  if (err.status === 401) {
-    logger.info(err);
-    return res.status(401).send("Token is invalid");
-  }
-  return next(err);
-});
-
 app.use(errorHandlerMiddleWare);
 
 module.exports = app;
