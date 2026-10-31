@@ -8,6 +8,13 @@ import StatisticsOverview from './components/StatisticsOverview';
 import './style.css';
 
 const PAGE_SIZE = 20;
+const token = document.cookie.match(/(?:^|;\s*)novelToken=([^;]*)/)?.[1];
+const api = axios.create({
+  headers: {
+    Authorization: `Bearer ${token ? decodeURIComponent(token) : ''}`,
+  },
+});
+
 const sections = {
   books: {
     label: '书籍管理',
@@ -77,8 +84,8 @@ function AdminApp() {
     setLoading(true);
     setError('');
     const request = sectionKey === 'overview'
-      ? axios.get('/api/admin/statistics', { signal: controller.signal })
-      : axios.get(section.endpoint, { params: { page, pageSize: PAGE_SIZE }, signal: controller.signal });
+      ? api.get('/api/admin/statistics', { signal: controller.signal })
+      : api.get(section.endpoint, { params: { page, pageSize: PAGE_SIZE }, signal: controller.signal });
 
     request.then(({ data }) => {
       if (sectionKey === 'overview') setStatistics(data);
@@ -107,7 +114,7 @@ function AdminApp() {
     const controller = new AbortController();
     setBookLoading(true);
     setBookError('');
-    axios.get('/api/admin/book-statistics', {
+    api.get('/api/admin/book-statistics', {
       params: { book_id: bookId, page: bookPage, pageSize: PAGE_SIZE },
       signal: controller.signal,
     }).then(({ data }) => setBookStatistics(data)).catch((requestError) => {
