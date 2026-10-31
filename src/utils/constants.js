@@ -1,4 +1,6 @@
-export const SIGN_KEY = "sign_key_novel_reader_xhykjyxgs";
+const SIGN_KEY = process.env.JWT_SECRET || "sign_key_novel_reader_xhykjyxgs";
+
+export { SIGN_KEY };
 
 export const CUSTOM_TAGS = [
   "绫华",

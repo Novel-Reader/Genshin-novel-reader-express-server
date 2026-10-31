@@ -2,6 +2,8 @@
 
 This is server for Genshin-novel-reader using express.
 
+Set the `JWT_SECRET` environment variable to a securely generated secret before starting the server. If it is missing, the application falls back to a built-in development key; do not use that default in production. For example, generate a secret with `openssl rand -base64 48` and provide it through your deployment environment. Do not commit production secrets to source control.
+
 原神小说阅读器的每个组件在 Github 上有独立的源代码库。
 
 - 小说阅读器（javascript版本）：https://github.com/Novel-Reader/Genshin-novel-reader
