@@ -1,8 +1,8 @@
 const DBHelper = require("../utils/db-helper");
 const logger = require("../utils/logger");
+const { hashPassword } = require("../utils/password");
 
 class ApiUser {
-
   static getUserInfo(req, res) {
     const email = req.query.email;
     const sql = `SELECT id, name, email, avatar, role FROM user WHERE email=?`;
@@ -20,22 +20,39 @@ class ApiUser {
     );
   }
 
-  static addUser(req, res) {
+  static async addUser(req, res) {
     const { email, name, password } = req.body;
     // verify user info must contain email, name and password
     if (
-      typeof email !== "string" || !email.trim() || email.length > 255 ||
-      typeof name !== "string" || !name.trim() || name.length > 255 ||
-      typeof password !== "string" || !password
+      typeof email !== "string" ||
+      !email.trim() ||
+      email.length > 255 ||
+      typeof name !== "string" ||
+      !name.trim() ||
+      name.length > 255 ||
+      typeof password !== "string" ||
+      !password
     ) {
-      res.status(400).send({ error_massage: "Email, username or password is not correct" });
+      res
+        .status(400)
+        .send({ error_massage: "Email, username or password is not correct" });
       return;
     }
     if (typeof password !== "string" || password.length < 8) {
-      res.status(400).send({ error_message: "Password must be at least 8 characters" });
+      res
+        .status(400)
+        .send({ error_message: "Password must be at least 8 characters" });
       return;
     }
-    let sql = `SELECT * FROM user WHERE email=?`;
+    let passwordHash;
+    try {
+      passwordHash = await hashPassword(password);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).send({ error_message: "Unable to create user" });
+      return;
+    }
+    let sql = `SELECT id FROM user WHERE email=?`;
     DBHelper(
       sql,
       (err, results) => {
@@ -64,7 +81,7 @@ class ApiUser {
           [
             name,
             email,
-            password,
+            passwordHash,
             "https://www.baidu.com/img/flexible/logo/pc/result@2.png",
           ]
         );
@@ -95,14 +112,24 @@ class ApiUser {
     );
   }
 
-  static changeUserPassword(req, res) {
+  static async changeUserPassword(req, res) {
     const { email, password } = req.body;
     if (typeof email !== "string" || !email.trim()) {
       res.status(400).send({ error_message: "A valid email is required" });
       return;
     }
     if (typeof password !== "string" || password.length < 8) {
-      res.status(400).send({ error_message: "Password must be at least 8 characters" });
+      res
+        .status(400)
+        .send({ error_message: "Password must be at least 8 characters" });
+      return;
+    }
+    let passwordHash;
+    try {
+      passwordHash = await hashPassword(password);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).send({ error_message: "Unable to update password" });
       return;
     }
     const sql = `update user set password = ? where email = ?`;
@@ -116,7 +143,7 @@ class ApiUser {
         }
         res.status(200).send("success");
       },
-      [password, email]
+      [passwordHash, email]
     );
   }
 
