@@ -7,6 +7,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
+        admin: path.resolve(__dirname, 'src/admin/index.jsx'),
         reader: path.resolve(__dirname, 'src/reader/index.jsx'),
         register: path.resolve(__dirname, 'src/register/index.jsx'),
       },
@@ -14,7 +15,12 @@ export default defineConfig({
         format: 'es',
         name: '[name]', // 按入口名称生成不同的全局变量
         entryFileNames: '[name]/index.es.js',
-        assetFileNames: '[name]/assets/[name]-[hash][extname]',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith('.css') && assetInfo.name.includes('admin')) {
+            return 'admin/style.css';
+          }
+          return '[name]/assets/[name]-[hash][extname]';
+        },
         // 禁用内联动态导入
         inlineDynamicImports: false,
       },
