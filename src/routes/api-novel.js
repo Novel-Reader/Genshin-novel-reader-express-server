@@ -1,11 +1,16 @@
 const DBHelper = require("../utils/db-helper");
 const logger = require("../utils/logger");
 const { getValueFromRedis, setValueFromRedis } = require("../utils/redis-helper");
+const { isValidBookId } = require("../utils/validation");
 
 class ApiNovel {
 
   static addNovel(req, res) {
     let { name, cover_photo, author, detail, price, brief, size, tag } = req.body;
+    if (typeof name !== "string" || !name.trim() || name.length > 50 || typeof detail !== "string") {
+      res.status(400).send({ error_message: "A valid name and detail are required" });
+      return;
+    }
     if (!cover_photo) {
       cover_photo = "https://www.baidu.com/img/flexible/logo/pc/result@2.png";
     }
@@ -28,13 +33,13 @@ class ApiNovel {
     DBHelper(sql, (err, results) => {
       if (err) {
         logger.error(err);
-        res.status(400).send({ error_massage: err });
+        res.status(500).send({ error_message: "Unable to create book" });
         return;
       }
       DBHelper('SELECT id, name FROM book ORDER BY id DESC LIMIT 1', (err2, results2) => {
         if (err2) {
           logger.error(err2);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to load created book" });
           return;
         }
         res.status(200).send(results2);
@@ -43,7 +48,11 @@ class ApiNovel {
   }
 
   static batchUploadNovel(req, res) {
-    const files = req.files;
+    const files = req.files || [];
+    if (files.length === 0) {
+      res.status(400).send({ error_message: "At least one file is required" });
+      return;
+    }
     try {
       const fileContents = files.map(file => file.buffer.toString('utf8'));    
       const fileNames = files.map(file => {
@@ -79,7 +88,7 @@ class ApiNovel {
       DBHelper(sql, (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to upload books" });
           return;
         }
         res.status(200).send("success");
@@ -92,13 +101,17 @@ class ApiNovel {
 
   static deleteNovel(req, res) {
     const id = req.query.id;
+    if (!isValidBookId(id)) {
+      res.status(400).send({ error_message: "A valid book id is required" });
+      return;
+    }
     const sql = `DELETE FROM book WHERE id=?`;
     DBHelper(
       sql,
       (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to delete book" });
           return;
         }
         logger.info(results);
@@ -116,7 +129,7 @@ class ApiNovel {
       (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to load books" });
           return;
         }
         res.status(200).send(results);
@@ -127,8 +140,9 @@ class ApiNovel {
 
   static searchNovel(req, res) {
     const { keyword } = req.body;
-    if (!keyword) {
-      res.status(400).send({ error_massage: "search keyword is null" });
+    if (typeof keyword !== "string" || !keyword.trim()) {
+      res.status(400).send({ error_message: "A search keyword is required" });
+      return;
     }
     // LIKE 是大小写敏感的，区分大小写字母。ILIKE 是大小写不敏感的，不会区分大小写字母。
     // ILIKE 是 PostgreSQL 特有的语法，而 LIKE 是 SQL 标准语法。
@@ -140,7 +154,7 @@ class ApiNovel {
     DBHelper(sql, (err, results) => {
       if (err) {
         logger.error(err);
-        res.status(400).send({ error_massage: err });
+        res.status(500).send({ error_message: "Unable to search books" });
         return;
       }
       res.status(200).send(results);
@@ -150,12 +164,16 @@ class ApiNovel {
   // get novel detail
   static async getNovelDetail(req, res) {
     // 01 generate download info
-    const { book_id, user_id } = req.query;
+    const { book_id } = req.query;
+    if (!isValidBookId(book_id)) {
+      res.status(400).send({ error_message: "A valid book_id is required" });
+      return;
+    }
     const sql = `insert into download_info (userid, bookid) values(?, ?)`;
     await DBHelper(sql,(err, results) => {
       if (err) {
         logger.error(err);
-        res.status(400).send({ error_massage: err });
+        res.status(500).send({ error_message: "Unable to record download" });
         return;
       }
       // Count the download count of download_info table and write it into the book table
@@ -164,17 +182,17 @@ class ApiNovel {
         DBHelper(sql,(err, results) => {
           if (err) {
             logger.error(err);
-            res.status(400).send({ error_massage: err });
+            res.status(500).send({ error_message: "Unable to update download count" });
             return;
           }
         },[book_id, book_id]);
       }
-    },[user_id, book_id]);
+    },[req.currentUser.id, book_id]);
     // 02 get detail from redis, if not, get from mysql
     getValueFromRedis("book-" + book_id, (err, result) => {
       if (err) {
         logger.error(err);
-        res.status(400).send({ error_massage: err });
+        res.status(500).send({ error_message: "Unable to load book" });
         return;
       }
       if (result) {
@@ -187,7 +205,7 @@ class ApiNovel {
           (err, results) => {
             if (err) {
               logger.error(err);
-              res.status(400).send({ error_massage: err });
+              res.status(500).send({ error_message: "Unable to load book" });
               return;
             }
             setValueFromRedis("book-" + book_id, JSON.stringify(results));

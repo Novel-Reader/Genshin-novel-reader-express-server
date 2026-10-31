@@ -1,12 +1,14 @@
 const DBHelper = require("../utils/db-helper");
 const logger = require("../utils/logger");
+const { isValidBookId } = require("../utils/validation");
 
 class ApiComment {
 
   static getComment(req, res) {
     const { book_id, start = 1, limit = 10 } = req.query;
-    if (!book_id) {
-      res.status(400).send({ error_massage: "book_id is required" });
+    if (!isValidBookId(book_id)) {
+      res.status(400).send({ error_message: "A valid book_id is required" });
+      return;
     }
     const sql = `SELECT id, author, detail, created_at FROM comment WHERE book_id=? limit ?, ?`;
     DBHelper(
@@ -14,7 +16,7 @@ class ApiComment {
       (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to load comments" });
           return;
         }
         res.status(200).send(results);
@@ -24,9 +26,10 @@ class ApiComment {
   }
 
   static postComment(req, res) {
-    let { book_id, detail, author } = req.body;
-    if (!book_id) {
-      res.status(400).send({ error_massage: "book_id is required" });
+    const { book_id, detail } = req.body;
+    if (!isValidBookId(book_id) || typeof detail !== "string" || !detail.trim()) {
+      res.status(400).send({ error_message: "A valid book_id and comment detail are required" });
+      return;
     }
     const sql = `insert into comment (book_id, detail, author, created_at) values(?, ?, ?, ?)`;
     const t = new Date();
@@ -35,12 +38,12 @@ class ApiComment {
       (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to create comment" });
           return;
         }
         res.status(200).send("success");
       },
-      [book_id, detail, author, t]
+      [book_id, detail, req.currentUser.email, t]
     );
   }
 
@@ -50,6 +53,7 @@ class ApiComment {
       res
         .status(400)
         .send({ error_massage: "comment_id and detail are required" });
+      return;
     }
     const sql = `update comment set detail = ? where id = ?`;
     DBHelper(
@@ -57,7 +61,7 @@ class ApiComment {
       (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to update comment" });
           return;
         }
         res.status(200).send("success");
@@ -70,6 +74,7 @@ class ApiComment {
     const comment_id = req.query.id;
     if (!comment_id) {
       res.status(400).send({ error_massage: "comment_id is required" });
+      return;
     }
     const sql = `DELETE FROM comment WHERE id=?`;
     DBHelper(
@@ -77,7 +82,7 @@ class ApiComment {
       (err, results) => {
         if (err) {
           logger.error(err);
-          res.status(400).send({ error_massage: err });
+          res.status(500).send({ error_message: "Unable to delete comment" });
           return;
         }
         logger.info(results);

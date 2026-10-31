@@ -8,6 +8,13 @@ const ApiLogin = require('./api-login');
 const ApiUserBook = require('./api-user-book');
 const crossOriginMiddleWare = require("../middlewares/cross-origin");
 const verifyTokenExpiresMiddleWare = require("../middlewares/verify-token-expires");
+const {
+  requireAdmin,
+  loadCurrentUser,
+  requireOwnUserOrAdmin,
+  requireOwnUserIdOrAdmin,
+  requireCommentOwnerOrAdmin,
+} = require("../middlewares/authorization");
 
 const router = express.Router();
 
@@ -22,35 +29,35 @@ router.post("/user", ApiUser.addUser);
 
 router.use(verifyTokenExpiresMiddleWare);
 
-router.get("/user", ApiUser.getUserInfo);
-router.delete("/user", ApiUser.deleteUser);
-router.post("/user-password", ApiUser.changeUserPassword);
-router.post("/user-avatar", ApiUser.changeUserAvatar);
+router.get("/user", requireOwnUserOrAdmin, ApiUser.getUserInfo);
+router.delete("/user", requireAdmin, ApiUser.deleteUser);
+router.post("/user-password", requireOwnUserOrAdmin, ApiUser.changeUserPassword);
+router.post("/user-avatar", requireOwnUserOrAdmin, ApiUser.changeUserAvatar);
 
-router.post("/novel", ApiNovel.addNovel);
-router.delete("/novel", ApiNovel.deleteNovel);
+router.post("/novel", requireAdmin, ApiNovel.addNovel);
+router.delete("/novel", requireAdmin, ApiNovel.deleteNovel);
 router.get("/novel_list", ApiNovel.getNovelList);
 router.post("/search-novel", ApiNovel.searchNovel);
-router.get("/novel-detail", ApiNovel.getNovelDetail);
+router.get("/novel-detail", loadCurrentUser, ApiNovel.getNovelDetail);
 
 // upload.none() 表示不处理文件上传，只处理表单数据
 // upload.single('file') 表示处理一个名为 file 的文件字段
 // upload.array('files', 10) 表示允许上传最多 10 个文件，文件字段名称为 files
-router.post("/batch-upload-novel", upload.array('files', 10), ApiNovel.batchUploadNovel);
+router.post("/batch-upload-novel", requireAdmin, upload.array('files', 10), ApiNovel.batchUploadNovel);
 
-router.post("/comment", ApiComment.postComment);
+router.post("/comment", loadCurrentUser, ApiComment.postComment);
 router.get("/comment", ApiComment.getComment);
-router.put("/comment", ApiComment.updateComment);
-router.delete("/comment", ApiComment.deleteComment);
+router.put("/comment", requireCommentOwnerOrAdmin, ApiComment.updateComment);
+router.delete("/comment", requireCommentOwnerOrAdmin, ApiComment.deleteComment);
 
-router.get("/admin/users", ApiAdmin.getUsers);
-router.get("/admin/books", ApiAdmin.getBooks);
-router.get("/admin/comments", ApiAdmin.getComments);
-router.get("/admin/statistics", ApiAdmin.getStatistics);
-router.get("/admin/book-statistics", ApiAdmin.getBookStatistics);
+router.get("/admin/users", requireAdmin, ApiAdmin.getUsers);
+router.get("/admin/books", requireAdmin, ApiAdmin.getBooks);
+router.get("/admin/comments", requireAdmin, ApiAdmin.getComments);
+router.get("/admin/statistics", requireAdmin, ApiAdmin.getStatistics);
+router.get("/admin/book-statistics", requireAdmin, ApiAdmin.getBookStatistics);
 
-router.get("/user-book", ApiUserBook.getUserBookList);
-router.post("/user-book", ApiUserBook.updateUserBook);
-router.delete("/user-book", ApiUserBook.deleteUserBook);
+router.get("/user-book", requireOwnUserIdOrAdmin, ApiUserBook.getUserBookList);
+router.post("/user-book", requireOwnUserIdOrAdmin, ApiUserBook.updateUserBook);
+router.delete("/user-book", requireOwnUserIdOrAdmin, ApiUserBook.deleteUserBook);
 
 module.exports = router;

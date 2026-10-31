@@ -10,14 +10,8 @@ class ApiLogin {
       sql,
       (err, results) => {
         if (err) {
-          // database return error, maybe not connect db
-          if (err.sqlMessage) {
-            logger.error(err.sqlMessage);
-            res.status(500).send({ error_massage: err.sqlMessage });
-            return;
-          }
           logger.error(err);
-          res.status(500).send({ error_massage: err });
+          res.status(500).send({ error_message: "Internal server error" });
           return;
         }
         if (results.length === 0) {

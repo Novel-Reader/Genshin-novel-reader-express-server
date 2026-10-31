@@ -1,5 +1,6 @@
 const DBHelper = require("../utils/db-helper");
 const logger = require("../utils/logger");
+const { isValidBookId } = require("../utils/validation");
 
 function getPagination(req) {
   const requestedPage = Number.parseInt(req.query.page, 10);
@@ -92,11 +93,12 @@ class ApiAdmin {
   }
 
   static getBookStatistics(req, res) {
-    const bookId = Number.parseInt(req.query.book_id, 10);
-    if (!Number.isInteger(bookId) || bookId < 1) {
+    const { book_id: bookId } = req.query;
+    if (!isValidBookId(bookId)) {
       res.status(400).send({ error_message: "A valid book_id is required" });
       return;
     }
+    const numericBookId = Number(bookId);
 
     const { page, pageSize, offset } = getPagination(req);
     const bookSql = `SELECT id, name, author, price, size, download_count FROM book WHERE id = ?`;
@@ -144,10 +146,10 @@ class ApiAdmin {
                 pageSize,
               },
             });
-          }, [bookId, offset, pageSize]);
-        }, [bookId]);
-      }, [bookId]);
-    }, [bookId]);
+      }, [numericBookId, offset, pageSize]);
+        }, [numericBookId]);
+      }, [numericBookId]);
+    }, [numericBookId]);
   }
 }
 
