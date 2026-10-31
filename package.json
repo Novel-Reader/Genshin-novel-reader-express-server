@@ -8,6 +8,11 @@
     "test:coverage": "jest --coverage",
     "start": "rm -rf ./dist && mkdir dist && cp -r ./src/config ./dist && cp -r ./public ./dist && cp -r ./src/views ./dist && ./node_modules/.bin/babel src --out-dir dist/ && export NODE_ENV=development && DEBUG=myapp:* && nodemon ./bin/www"
   },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/tests/setup-env.js"
+    ]
+  },
   "dependencies": {
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.29.6",
