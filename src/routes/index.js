@@ -25,4 +25,8 @@ router.get("/novel", function (req, res, next) {
   res.render("novel");
 });
 
+router.get("/admin", function (req, res) {
+  res.render("admin");
+});
+
 module.exports = router;
